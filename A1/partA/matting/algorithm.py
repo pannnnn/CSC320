@@ -171,7 +171,6 @@ class Matting:
 
         success = False
         msg = 'Placeholder'
-
         #########################################
         ## PLACE YOUR CODE BETWEEN THESE LINES ##
         #########################################
@@ -185,6 +184,9 @@ class Matting:
         delta = np.concatenate((deltaA, deltaB),axis=2)
         back = np.concatenate((self._images['backA'][:,:,:], self._images['backB'][:,:,:]),axis=2)
         row, column, channel = back.shape
+        self._images["colOut"] = np.zeros((row, column, 3), dtype=np.uint8)
+        self._images["alphaOut"] = -1 
+        alphaOut = -1
         np.eye()
         for i in range(row):
             for j in range(column):
