@@ -162,7 +162,7 @@ class Matting:
     # ojbect. 
     def triangulationMatting(self):
         """
-success, errorMessage = triangulationMatting(self)
+	success, errorMessage = triangulationMatting(self)
         
         Perform triangulation matting. Returns True if successful (ie.
         all inputs and outputs are valid) and False if not. When success=False
@@ -204,12 +204,12 @@ success, errorMessage = triangulationMatting(self)
         
     def createComposite(self):
         """
-success, errorMessage = createComposite(self)
+	success, errorMessage = createComposite(self)
         
         Perform compositing. Returns True if successful (ie.
         all inputs and outputs are valid) and False if not. When success=False
         an explanatory error message should be returned.
-"""
+	"""
 
         success = False
         msg = 'Placeholder'
