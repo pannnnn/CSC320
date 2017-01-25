@@ -178,17 +178,23 @@ success, errorMessage = triangulationMatting(self)
         mat_1 = np.eye(3, 3)
         mat_2 = np.eye(3, 3)
         coefficient = np.concatenate((mat_1, mat_2), axis=0)
+        back = np.concatenate((self._images['backA'][:,:,:], self._images['backB'][:,:,:]),axis=2)
         #c-ck compA -back A
         deltaA = self._images['compA'][:,:,:] - self._images['backA'][:,:,:]
         deltaB = self._images['compB'][:,:,:] - self._images['backB'][:,:,:]
         delta = np.concatenate((deltaA, deltaB),axis=2)
         back = np.concatenate((self._images['backA'][:,:,:], self._images['backB'][:,:,:]),axis=2)
-        A = np.concatenate((coefficient, np.negative(back)),axis=2)
-        try:
-            inverseA = numpy.linalg.pinv(A)
-        except LinAlgError:
-            msg = 'some error message here'
-        x = np.matmul(inverseA, delta)
+        row, column, channel = back.shape
+        np.eye()
+        for i in range(row):
+            for j in range(column):
+                column_back = back[i,j,:channel][np.newaxis].T
+                A = np.concatenate((coefficient, column_back),axis=1)
+                try:
+                    inverseA = numpy.linalg.pinv(A)
+                except LinAlgError:
+                    msg = 'some error message here'
+                x = np.matmul(inverseA, delta[i,j,:])
         self._images["colOut"] = x[0:3]
         self._images["alphaOut"] = x[3:]
         success = True
