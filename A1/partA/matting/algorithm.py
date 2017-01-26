@@ -131,7 +131,7 @@ class Matting:
             self._images[key] = img
             success = True
         else:
-            msg = 'some error message here'
+            msg = 'Read from image failed'
         #########################################
         return success, msg
 
@@ -153,7 +153,7 @@ class Matting:
             cv.imwrite(fileName, self._images[key])
             success = True
         except:
-            msg = 'some error message here'
+            msg = 'Write to image failed'
         #########################################
         return success, msg
 
@@ -177,28 +177,27 @@ class Matting:
         mat_1 = np.eye(3, 3)
         mat_2 = np.eye(3, 3)
         coefficient = np.concatenate((mat_1, mat_2), axis=0)
-        back = np.concatenate((self._images['backA'][:,:,:], self._images['backB'][:,:,:]),axis=2)
-        #c-ck compA -back A
-        deltaA = self._images['compA'][:,:,:] - self._images['backA'][:,:,:]
-        deltaB = self._images['compB'][:,:,:] - self._images['backB'][:,:,:]
-        delta = np.concatenate((deltaA, deltaB),axis=2)
-        back = np.concatenate((self._images['backA'][:,:,:], self._images['backB'][:,:,:]),axis=2)
+        backA = np.divide(self._images['backA'].astype(np.float64), 255)
+        backB = np.divide(self._images['backB'].astype(np.float64), 255)
+        compA = np.divide(self._images['compA'].astype(np.float64), 255)
+        compB = np.divide(self._images['compB'].astype(np.float64), 255)        
+        back = np.concatenate((backA, backB), axis=2) * (-1)
+        delta = np.concatenate((compA - backA, compB - backB), axis=2)
         row, column, channel = back.shape
         self._images["colOut"] = np.zeros((row, column, 3), dtype=np.uint8)
-        self._images["alphaOut"] = -1 
-        alphaOut = -1
-        np.eye()
+        self._images["alphaOut"] = np.zeros((row, column, 3), dtype=np.uint8)
         for i in range(row):
             for j in range(column):
-                column_back = back[i,j,:channel][np.newaxis].T
+                column_back = back[i,j,:][np.newaxis].T
                 A = np.concatenate((coefficient, column_back),axis=1)
                 try:
-                    inverseA = numpy.linalg.pinv(A)
-                except LinAlgError:
+                    inverseA = np.linalg.pinv(A)
+                except:
                     msg = 'some error message here'
-                x = np.matmul(inverseA, delta[i,j,:])
-        self._images["colOut"] = x[0:3]
-        self._images["alphaOut"] = x[3:]
+                pseudo_x = np.clip(np.matmul(inverseA, delta[i,j,:]), 0, 1)
+                x = np.uint8(pseudo_x * 255)
+                self._images["colOut"][i,j,:] = x[0:3]
+                self._images["alphaOut"][i,j,:] = np.full((1,3), x[3])
         success = True
         #########################################
         return success, msg
@@ -212,16 +211,26 @@ class Matting:
         all inputs and outputs are valid) and False if not. When success=False
         an explanatory error message should be returned.
 	"""
-
+        
         success = False
         msg = 'Placeholder'
 
         #########################################
         ## PLACE YOUR CODE BETWEEN THESE LINES ##
         #########################################
-
+        colIn_shape = self._images["colIn"].shape
+        backIn_shape = self._images["backIn"].shape
+        alphaIn_shape = self._images["alphaIn"].shape
+        self._images["compOut"] = np.zeros((colIn_shape[0], colIn_shape[1], 3), dtype=np.uint8)
+        if (colIn_shape != backIn_shape or colIn_shape != alphaIn_shape or backIn_shape != alphaIn_shape):
+            msg = 'Input file are not of same length and width'
+        else:
+            alpha = self._images["alphaIn"].astype(np.float64)/255
+            one_matrix = np.full((colIn_shape[0], colIn_shape[1], 3), 1)
+            alpha_k = one_matrix - alpha
+            c_k = alpha_k * self._images["backIn"].astype(np.float64)
+            c_0 = self._images["colIn"].astype(np.float64)
+            self._images["compOut"] = np.uint8(c_0 + c_k)
+            success = True
         #########################################
-
         return success, msg
-
-
