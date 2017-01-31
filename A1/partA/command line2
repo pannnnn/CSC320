@@ -1,0 +1,47 @@
+###########################
+#####   abottle   #########
+###########################
+
+python viscomp.py --matting --backA ../test_images/cropped/abottle_backA.jpg --backB ../test_images/cropped/abottle_backB.jpg --compA ../test_images/cropped/abottle_compA.jpg --compB ../test_images/cropped/abottle_compB.jpg --alphaOut alpha_abottle.tif --colOut col_abottle.tif
+
+python viscomp.py --compositing --alphaIn alpha_abottle.tif --colIn col_abottle.tif --backIn ../test_images/tiny/back1.jpg --compOut comp_abottle.jpg
+
+###########################
+#####   bbottle   #########
+###########################
+
+python viscomp.py --matting --backA ../test_images/cropped/bbottle_backA.jpg --backB ../test_images/cropped/bbottle_backB.jpg --compA ../test_images/cropped/bbottle_compA.jpg --compB ../test_images/cropped/bbottle_compB.jpg --alphaOut alpha_bbottle.tif --colOut col_bbottle.tif
+
+python viscomp.py --compositing --alphaIn alpha_bbottle.tif --colIn col_bbottle.tif --backIn ../test_images/tiny/back2.jpg --compOut comp_bbottle.jpg
+
+###########################
+#######    boat   #########
+###########################
+
+python viscomp.py --matting --backA ../test_images/cropped/boat_backA.jpg --backB ../test_images/cropped/boat_backB.jpg --compA ../test_images/cropped/boat_compA.jpg --compB ../test_images/cropped/boat_compB.jpg --alphaOut alpha_boat.tif --colOut col_boat.tif
+
+python viscomp.py --compositing --alphaIn alpha_boat.tif --colIn col_boat.tif --backIn ../test_images/tiny/back3.jpg --compOut comp_boat.jpg
+
+###########################
+#######    box    #########
+###########################
+
+python viscomp.py --matting --backA ../test_images/cropped/box_backA.jpg --backB ../test_images/cropped/box_backB.jpg --compA ../test_images/cropped/box_compA.jpg --compB ../test_images/cropped/box_compB.jpg --alphaOut alpha_box.tif --colOut col_box.tif
+
+python viscomp.py --compositing --alphaIn alpha_box.tif --colIn col_box.tif --backIn ../test_images/tiny/back4.jpg --compOut comp_box.jpg
+
+###########################
+#######    tab    #########
+###########################
+
+python viscomp.py --matting --backA ../test_images/cropped/tab_backA.jpg --backB ../test_images/cropped/tab_backB.jpg --compA ../test_images/cropped/tab_compA.jpg --compB ../test_images/cropped/tab_compB.jpg --alphaOut alpha_tab.tif --colOut col_tab.tif
+
+python viscomp.py --compositing --alphaIn alpha_tab.tif --colIn col_tab.tif --backIn ../test_images/tiny/back5.jpg --compOut comp_tab.jpg
+
+###########################
+#####    unknown   ########
+###########################
+
+python viscomp.py --matting --backA ../test_images/cropped/unknown_backA.jpg --backB ../test_images/cropped/unknown_backB.jpg --compA ../test_images/cropped/unknown_compA.jpg --compB ../test_images/cropped/unknown_compB.jpg --alphaOut alpha_unknown.tif --colOut col_unknown.tif
+
+python viscomp.py --compositing --alphaIn alpha_unknown.tif --colIn col_unknown.tif --backIn ../test_images/tiny/back6.jpg --compOut comp_unknown.jpg

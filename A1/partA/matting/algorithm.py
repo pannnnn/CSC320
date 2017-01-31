@@ -24,6 +24,9 @@ import cv2 as cv
 ## PLACE YOUR CODE BETWEEN THESE LINES ##
 #########################################
 
+# this line is used to avoid
+# "RuntimeWarning: invalid value encountered in divide"
+np.seterr(divide='ignore', invalid='ignore')
 
 #########################################
 

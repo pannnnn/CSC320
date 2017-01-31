@@ -1,0 +1,17 @@
+# command for reference code
+viscomp --matting --backA ../../test_images/tiny/flowers-backA.jpg --backB ../../test_images/tiny/flowers-backB.jpg --compA ../../test_images/tiny/flowers-compA.jpg --compB ../../test_images/tiny/flowers-compB.jpg --alphaOut alpha.tif --colOut col.tif
+
+viscomp --matting --backA ../../test_images/large/flowers-backA.jpg --backB ../../test_images/large/flowers-backB.jpg --compA ../../test_images/large/flowers-compA.jpg --compB ../../test_images/large/flowers-compB.jpg --alphaOut alpha.tif --colOut col.tif
+
+viscomp --compositing --alphaIn alpha.tif --colIn col.tif --backIn ../../test_images/tiny/window.jpg --compOut comp.jpg
+
+# for wing and command line
+python viscomp.py --matting --backA ../test_images/tiny/flowers-backA.jpg --backB ../test_images/tiny/flowers-backB.jpg --compA ../test_images/tiny/flowers-compA.jpg --compB ../test_images/tiny/flowers-compB.jpg --alphaOut alpha.tif --colOut col.tif
+
+python viscomp.py --matting --backA ../test_images/large/flowers-backA.jpg --backB ../test_images/large/flowers-backB.jpg --compA ../test_images/large/flowers-compA.jpg --compB ../test_images/large/flowers-compB.jpg --alphaOut alpha.tif --colOut col.tif
+
+python viscomp.py --compositing --alphaIn alpha.tif --colIn col.tif --backIn ../test_images/tiny/window.jpg --compOut comp.jpg
+
+viscomp --matting --backA flowers-backA.jpg --backB flowers-backB.jpg --compA flowers-compA.jpg --compB flowers-compB.jpg --alphaOut alpha.tif --colOut col.tif
+
+viscomp --compositing --alphaIn alpha.tif --colIn col.tif --backIn window.jpg --compOut comp.jpg
