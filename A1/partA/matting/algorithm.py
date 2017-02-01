@@ -177,51 +177,40 @@ class Matting:
         #########################################
         ## PLACE YOUR CODE BETWEEN THESE LINES ##
         #########################################
-        # mat_1 = np.eye(3, 3)
-        # mat_2 = np.eye(3, 3)
-        # coefficient = np.concatenate((mat_1, mat_2), axis=0)
         row, column, channel = self._images['backA'].shape
         backA_255 = self._images['backA']
+                # divide by 255 to make pixel value between (0, 1)
         backA = np.divide(backA_255.astype(np.float64), 255)
         backB = np.divide(self._images['backB'].astype(np.float64), 255)
-        compA_255 = self._images['compA'] 
+        compA_255 = self._images['compA']
         compA = np.divide(compA_255.astype(np.float64), 255)
         compB = np.divide(self._images['compB'].astype(np.float64), 255)
-        # back = np.concatenate((backA, backB), axis=2) * (-1)
         substraction_comp = compA - compB
         substraction_back = backA - backB
+        # extract individual channel value from the pixel for later manipulation
         substraction_comp_R = substraction_comp[:,:,0]
         substraction_comp_G = substraction_comp[:,:,1]
         substraction_comp_B = substraction_comp[:,:,2]
         substraction_back_R = substraction_back[:,:,0]
         substraction_back_G = substraction_back[:,:,1]
         substraction_back_B = substraction_back[:,:,2]
+        # the formular is listed in the handout, my implementation is for bonus
+        # and my idea is from Smith and Blinn-SIGGRAPH 1996.pdf Theorem 4
+        # construct denominator
         denominator = substraction_comp_R * substraction_back_R + substraction_comp_G * substraction_back_G \
             + substraction_comp_B * substraction_back_B
+        # construct numerator
         numerator = substraction_back_R * substraction_back_R + substraction_back_G * substraction_back_G \
             + substraction_back_B * substraction_back_B
+        # apply formula and eliminate values go beyond representation limit
+        # then restore to range of 255
         alpha = np.divide(denominator, numerator).reshape((row,column,1))
         alpha = np.clip(1 - alpha, 0, 1)
         self._images["alphaOut"] = np.uint8(alpha * 255)
         one_matrix = np.ones((row, column, 1))
         alpha_k = one_matrix - alpha
+        # simply implement original function to get col_Out
         self._images["colOut"] = compA_255 - alpha_k * backA_255
-        #delta = np.concatenate((compA - backA, compB - backB), axis=2)
-        #row, column, channel = back.shape
-        #self._images["colOut"] = np.zeros((row, column, 3), dtype=np.uint8)
-        #self._images["alphaOut"] = np.zeros((row, column, 3), dtype=np.uint8)
-        #for i in range(row):
-            #for j in range(column):
-                #column_back = back[i,j,:][np.newaxis].T
-                #A = np.concatenate((coefficient, column_back),axis=1)
-                #try:
-                    #inverseA = np.linalg.pinv(A)
-                #except:
-                    #msg = 'some error message here'
-                #pseudo_x = np.clip(np.matmul(inverseA, delta[i,j,:]), 0, 1)
-                #x = np.uint8(pseudo_x * 255)
-                #self._images["colOut"][i,j,:] = x[0:3]
-                #self._images["alphaOut"][i,j,:] = np.full((1,3), x[3])
         success = True
         #########################################
         return success, msg
@@ -249,6 +238,9 @@ class Matting:
         if (colIn_shape != backIn_shape or colIn_shape != alphaIn_shape or backIn_shape != alphaIn_shape):
             msg = 'Input file are not of same length and width'
         else:
+            # apply formula that is given in lecture slides
+            # again range should always be between (0,1) when doing manipulation
+            # restore the value to get finally represented as a picture
             alpha = self._images["alphaIn"].astype(np.float64)/255
             one_matrix = np.ones((colIn_shape[0], colIn_shape[1], 3))
             alpha_k = one_matrix - alpha
@@ -258,3 +250,31 @@ class Matting:
             success = True
         #########################################
         return success, msg
+    
+    
+    
+    ###################################################
+    ## Following is my first time implementation code## 
+    ##   segment using for loop to achive the goal   ##
+    ###################################################
+    
+    #mat_1 = np.eye(3, 3)
+    #mat_2 = np.eye(3, 3)
+    #coefficient = np.concatenate((mat_1, mat_2), axis=0)
+    #delta = np.concatenate((compA - backA, compB - backB), axis=2)
+    #back = np.concatenate((backA, backB), axis=2) * (-1)
+    #row, column, channel = back.shape
+    #self._images["colOut"] = np.zeros((row, column, 3), dtype=np.uint8)
+    #self._images["alphaOut"] = np.zeros((row, column, 3), dtype=np.uint8)
+    #for i in range(row):
+        #for j in range(column):
+            #column_back = back[i,j,:][np.newaxis].T
+            #A = np.concatenate((coefficient, column_back),axis=1)
+            #try:
+                #inverseA = np.linalg.pinv(A)
+            #except:
+                #msg = 'some error message here'
+            #pseudo_x = np.clip(np.matmul(inverseA, delta[i,j,:]), 0, 1)
+            #x = np.uint8(pseudo_x * 255)
+            #self._images["colOut"][i,j,:] = x[0:3]
+            #self._images["alphaOut"][i,j,:] = np.full((1,3), x[3])
